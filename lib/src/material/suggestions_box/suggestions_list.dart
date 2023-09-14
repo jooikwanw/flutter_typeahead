@@ -350,11 +350,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
             );
     }
 
-    var newChild = Column(
-      children: [child, Text('PLEASE')],
-    );
-
-    return newChild;
+    return child;
   }
 
   Widget createErrorWidget() {
@@ -385,10 +381,8 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
 
   Widget createSuggestionsWidget() {
     if (widget.layoutArchitecture == null) {
-      print('LAYOUT ARCHITECTURE NOT SPECIFIED ${widget.layoutArchitecture}');
       return defaultSuggestionsWidget();
     } else {
-      print('LAYOUT ARCHITECTURE SPECIFIED ${widget.layoutArchitecture}');
       return customSuggestionsWidget();
     }
   }
