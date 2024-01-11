@@ -181,7 +181,7 @@ class SuggestionsController<T> extends ChangeNotifier {
   void close({bool retainFocus = false}) {
     if (!isOpen) return;
     _isOpen = false;
-    _retainFocus = retainFocus;
+    // _retainFocus = retainFocus;
     notifyListeners();
   }
 

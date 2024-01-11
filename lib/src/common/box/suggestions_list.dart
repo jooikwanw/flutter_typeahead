@@ -18,7 +18,13 @@ class SuggestionsList<T> extends StatefulWidget {
     this.retainOnLoading,
     this.listBuilder,
     this.itemSeparatorBuilder,
+    this.icon,
   });
+
+  ///If user needs to add an icon on the suggestions box
+  ///
+  /// e.g Google Maps AutoComplete
+  final Widget? icon;
 
   /// {@macro flutter_typeahead.SuggestionsBox.controller}
   final SuggestionsController<T> controller;
@@ -164,57 +170,66 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>> {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: widget.controller,
-      builder: (context, _) {
-        List<T>? suggestions = widget.controller.suggestions;
-        bool retainOnLoading = widget.retainOnLoading ?? true;
+        listenable: widget.controller,
+        builder: (context, _) {
+          List<T>? suggestions = widget.controller.suggestions;
+          bool retainOnLoading = widget.retainOnLoading ?? true;
 
-        bool isError = widget.controller.hasError;
-        bool isEmpty = suggestions == null || suggestions.isEmpty;
-        bool isLoading =
-            widget.controller.isLoading && (isEmpty || !retainOnLoading);
+          bool isError = widget.controller.hasError;
+          bool isEmpty = suggestions == null || suggestions.isEmpty;
+          bool isLoading =
+              widget.controller.isLoading && (isEmpty || !retainOnLoading);
 
-        if (isLoading) {
-          if (widget.hideOnLoading ?? false) return const SizedBox();
-          return widget.loadingBuilder(context);
-        } else if (isError) {
-          if (widget.hideOnError ?? false) return const SizedBox();
-          return widget.errorBuilder(context, widget.controller.error!);
-        } else if (isEmpty) {
-          if (widget.hideOnEmpty ?? false) return const SizedBox();
-          return widget.emptyBuilder(context);
-        }
+          if (isLoading) {
+            if (widget.hideOnLoading ?? false) return const SizedBox();
+            return widget.loadingBuilder(context);
+          } else if (isError) {
+            if (widget.hideOnError ?? false) return const SizedBox();
+            return widget.errorBuilder(context, widget.controller.error!);
+          } else if (isEmpty) {
+            if (widget.hideOnEmpty ?? false) return const SizedBox();
+            return widget.emptyBuilder(context);
+          }
 
-        if (widget.listBuilder != null) {
-          return widget.listBuilder!(
-            context,
-            suggestions
-                .map((suggestion) => widget.itemBuilder(context, suggestion))
-                .toList(),
+          if (widget.listBuilder != null) {
+            return widget.listBuilder!(
+              context,
+              suggestions
+                  .map((suggestion) => widget.itemBuilder(context, suggestion))
+                  .toList(),
+            );
+          }
+
+          var list = ListView.separated(
+            // We cannot pass a controller, as we want to inherit it from
+            // the PrimaryScrollController of the SuggestionsBox.
+            // This happens automatically as long as we
+            // dont pass a controller and pass either null or true for primary.
+            controller: null,
+            primary: null,
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            keyboardDismissBehavior: (widget.hideKeyboardOnDrag ?? false)
+                ? ScrollViewKeyboardDismissBehavior.onDrag
+                : ScrollViewKeyboardDismissBehavior.manual,
+            reverse:
+                widget.controller.effectiveDirection == VerticalDirection.up,
+            itemCount: suggestions.length,
+            itemBuilder: (context, index) =>
+                widget.itemBuilder(context, suggestions[index]),
+            separatorBuilder: (context, index) =>
+                widget.itemSeparatorBuilder?.call(context, index) ??
+                const SizedBox.shrink(),
           );
-        }
 
-        return ListView.separated(
-          // We cannot pass a controller, as we want to inherit it from
-          // the PrimaryScrollController of the SuggestionsBox.
-          // This happens automatically as long as we
-          // dont pass a controller and pass either null or true for primary.
-          controller: null,
-          primary: null,
-          padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          keyboardDismissBehavior: (widget.hideKeyboardOnDrag ?? false)
-              ? ScrollViewKeyboardDismissBehavior.onDrag
-              : ScrollViewKeyboardDismissBehavior.manual,
-          reverse: widget.controller.effectiveDirection == VerticalDirection.up,
-          itemCount: suggestions.length,
-          itemBuilder: (context, index) =>
-              widget.itemBuilder(context, suggestions[index]),
-          separatorBuilder: (context, index) =>
-              widget.itemSeparatorBuilder?.call(context, index) ??
-              const SizedBox.shrink(),
-        );
-      },
-    );
+          return Stack(children: [
+            list,
+            if (widget.icon != null)
+              Align(
+                  alignment: Alignment.bottomRight,
+                  child:
+                      Padding(padding: EdgeInsets.all(8), child: widget.icon)),
+          ]);
+        });
   }
 }
