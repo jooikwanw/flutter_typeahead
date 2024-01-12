@@ -7,7 +7,7 @@
 A TypeAhead (autocomplete) widget for Flutter, where you can show suggestions to
 users as they type
 
-<img src="./flutter_typeahead.gif" width="400" height="auto" alt="Flutter TypeAhead Demo" />
+<img src="https://raw.githubusercontent.com/AbdulRahmanAlHamali/flutter_typeahead/master/flutter_typeahead.gif" width="400" height="auto" alt="Flutter TypeAhead Demo" />
 
 ## Features
 
@@ -168,6 +168,9 @@ You can do so with the following parameters:
 - `hideOnSelect`: Hide the suggestions box when a suggestion is selected. `True` by default.
 - `hideOnUnfocus`: Hide the suggestions box when the `TextField` loses focus. `True` by default.
 - `hideWithKeyboard`: Hide the suggestions box when the keyboard is hidden. `True` by default.
+
+You can also very generally hide the suggestions box by returning `null` from the `suggestionsCallback`.
+This is different from returning an empty list, which will show the empty widget.
 
 ### Customizing the animation
 

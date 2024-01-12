@@ -37,6 +37,8 @@ class SuggestionsSearch<T> extends StatefulWidget {
   /// }
   /// ```
   ///
+  /// If this returns null, the suggestions box will be invisible.
+  ///
   /// See also:
   /// * [debounceDuration], which is the duration to wait for changes in the text field before updating suggestions.
   /// {@endtemplate}
@@ -110,16 +112,16 @@ class _SuggestionsSearchState<T> extends State<SuggestionsSearch<T>> {
     Object? newError;
 
     try {
-      newSuggestions = (await widget.suggestionsCallback(search)).toList();
+      newSuggestions = (await widget.suggestionsCallback(search))?.toList();
     } on Exception catch (e) {
       newError = e;
     }
 
+    if (!mounted) return;
+
     widget.controller.suggestions = newSuggestions;
     widget.controller.error = newError;
     widget.controller.isLoading = false;
-
-    if (!mounted) return;
 
     if (isQueued) {
       isQueued = false;
