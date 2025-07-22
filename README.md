@@ -186,7 +186,7 @@ TypeAheadField(
     return FadeTransition(
       opacity: CurvedAnimation(
         parent: animation,
-        curve: Curves.fastOutSlowIn
+        curve: Curves.fastOutSlowIn,
       ),
       child: child,
     ),
@@ -226,6 +226,23 @@ It grants access to the following:
 
 When building a widget inside of the suggestions box, you can access the controller via `SuggestionsController.of(context)`.
 
+### Controlling the focus
+
+Focus plays an important role in the suggestions box. It is used to determine when to show and hide the suggestions box.
+However, in certain situations you may want to control the suggestions box independently of the focus.
+
+Options to do so are as follows:
+
+On the `TypeAheadField`:
+
+- `showOnFocus` (default: `true`): Show the suggestions box when the `TextField` gains focus.
+- `hideOnUnfocus` (default: `true`): Hide the suggestions box when the `TextField` loses focus.
+
+On the `SuggestionsController`:
+
+- `open(gainFocus: false)`: Show the suggestions box without focusing it.
+- `close(retainFocus: true)`: Hide the suggestions box without unfocusing it.
+
 ### Customizing everything
 
 To create your own version of the TypeAhead widget, that is neither Material nor Cupertino, you can use the `RawTypeAheadField` widget.
@@ -242,6 +259,36 @@ As well as all the usual parameters, such as `suggestionsCallback`, `onSelected`
 
 The `decorationBuilder` can be used to inject required wrappers like `Material` or `DefaultTextStyle`.
 For more information, see the source code of the `TypeAheadField` widget.
+
+## FAQ
+
+### My suggestions arent changing when I type
+
+You have most likely forgotten to pass the controller and focus node to the `TextField` in the `builder` property.
+This is required for the suggestions box to function. Here is an example:
+
+```dart
+TypeAheadField(
+  // ...
+  controller: myTextEditingController, // your custom controller, or null
+  builder: (context, controller, focusNode) {
+    return TextField(
+      controller: controller, // note how the controller is passed
+      focusNode: focusNode,
+      // ...
+    );
+  },
+);
+```
+
+### My suggestions are not updating when I click on the TextField
+
+The TypeAhead field caches the suggestions to avoid unnecessary calls to the `suggestionsCallback`.
+If you want to force the suggestions to update, you can use the `SuggestionsController` to force a refresh.
+
+```dart
+mySuggestionsController.refresh();
+```
 
 ## Migrations
 
@@ -273,7 +320,7 @@ Additionally, various changes have been made to the API surface to make the pack
   - `intercepting`: This is now always true, since it doesnt interfere on mobile platforms and generally has no downsides.
   - `onSuggestionsBoxToggle`: You can subscribe to the `SuggestionsController` to get notified when the suggestions box is toggled.
   - `ignoreAccessibleNavigation`: The new `Overlay` code no longer requires to act differently when accessibility is enabled.
-  - `minCharsForSuggestions`: You can return an empty list from `suggestionsCallback` instead.
+  - `minCharsForSuggestions`: You can return `null` from `suggestionsCallback` instead.
   - `animationStart`: You can use the animation in the builder and map it to customise this.
   - `autoFlipListDirection`: This is now always true. You can use the list builder to disable this behavior.
   - `getImmediateSuggestions`: You can use the `debounceDuration` to achieve the same effect.
@@ -289,9 +336,9 @@ Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typ
 
 ## Team
 
-| [<img src="https://avatars.githubusercontent.com/u/16646600?v=3" width="100px;"/>](https://github.com/AbdulRahmanAlHamali) | [<img src="https://avatars.githubusercontent.com/u/2034925?v=3" width="100px;"/>](https://github.com/sjmcdowall) | [<img src="https://avatars.githubusercontent.com/u/5499214?v=3" width="100px;"/>](https://github.com/KaYBlitZ) | [<img src="https://avatars.githubusercontent.com/u/11785085?v=3" width="100px;"/>](https://github.com/clragon) |
-| -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| AbdulRahman AlHamali                                                                                                       | S McDowall                                                                                                       | Kenneth Liang                                                                                                  | clragon                                                                                                        |
+| [<img src="https://github.com/AbdulRahmanAlHamali.png" width="100px;"/>](https://github.com/AbdulRahmanAlHamali) | [<img src="https://github.com/sjmcdowall.png" width="100px;"/>](https://github.com/sjmcdowall) | [<img src="https://github.com/KaYBlitZ.png" width="100px;"/>](https://github.com/KaYBlitZ) | [<img src="https://github.com/clragon.png" width="100px;"/>](https://github.com/clragon) |
+| ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| AbdulRahman AlHamali                                                                                             | S McDowall                                                                                     | Kenneth Liang                                                                              | clragon                                                                                  |
 
 ## Thank you
 

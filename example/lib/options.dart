@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 abstract class FieldOption<T> extends ValueNotifier<T> {
   FieldOption({
@@ -76,6 +77,7 @@ class FieldSettings extends ChangeNotifier {
         direction,
         gridLayout,
         dividers,
+        constrainWidth,
         loadingDelay,
         retainOnLoading,
         debounce,
@@ -104,7 +106,8 @@ class FieldSettings extends ChangeNotifier {
   final ToggleFieldOption darkMode = ToggleFieldOption(
     key: 'darkMode',
     title: 'Dark Mode',
-    value: false,
+    value: SchedulerBinding.instance.platformDispatcher.platformBrightness ==
+        Brightness.dark,
     icon: Icons.dark_mode,
     iconFalse: Icons.light_mode,
   );
@@ -132,6 +135,13 @@ class FieldSettings extends ChangeNotifier {
     title: 'Dividers',
     value: true,
     icon: Icons.border_clear,
+  );
+
+  final ToggleFieldOption constrainWidth = ToggleFieldOption(
+    key: 'constrained',
+    title: 'Constrain Width',
+    value: true,
+    icon: Icons.filter_frames,
   );
 
   final ToggleFieldOption loadingDelay = ToggleFieldOption(

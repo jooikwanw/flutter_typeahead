@@ -26,6 +26,7 @@ class TypeAheadField<T> extends RawTypeAheadField<T> {
     super.hideOnEmpty,
     super.hideOnError,
     super.hideOnLoading,
+    super.showOnFocus,
     super.hideOnUnfocus,
     super.hideWithKeyboard,
     super.hideOnSelect,
@@ -42,6 +43,7 @@ class TypeAheadField<T> extends RawTypeAheadField<T> {
     DecorationBuilder? decorationBuilder,
     super.listBuilder,
     super.constraints,
+    super.constrainWidth,
     super.offset,
   }) : super(
           builder: builder ?? TypeAheadMaterialDefaults.builder,

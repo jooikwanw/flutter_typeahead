@@ -6,7 +6,20 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 ### Added
+- Highlighted suggestion in controller
+
+## 5.2.0 - 2024-02-08
+### Added
+- force refreshing suggestions with `SuggestionsController.refresh`
+
+### Fixed
+- suggestionsCallback getting called even when closed
+
+## 5.1.0 - 2024-01-27
+### Added
 - Returning null from `suggestionsCallback` hides the box
+- `showOnFocus` parameter for `TypeAheadField` to allow not showing the box on focus
+- `gainFocus` paramater for `SuggestionsController.open` to allow opening the box without focusing
 
 ## 5.0.2 - 2024-01-11
 ### Changed
